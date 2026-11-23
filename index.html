@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Meaning vs. Reality</title>
+<meta name="theme-color" content="#2f6b55">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Meaning vs Reality">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one notebook column. Top: new-entry form walking the six report steps in order. Below: the dated log and recurring core beliefs. */
+:root{
+  --bg:#eef2ef; --paper:#fbfcfa; --ink:#1d2a2c; --muted:#5d6d6b; --line:#d3dcd8;
+  --kelp:#2f6b55; --kelp-soft:#dcebe3; --ochre:#b9792a; --ochre-soft:#f5e8d5; --danger:#b3412e;
+  --display:"Young Serif", Georgia, "Times New Roman", serif;
+  --body:"Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root{
+  --bg:#121a1b; --paper:#192324; --ink:#e4ece8; --muted:#94a6a2; --line:#2c3a3b;
+  --kelp:#7cc4a3; --kelp-soft:#1f3a30; --ochre:#e0a75c; --ochre-soft:#3a2c19; --danger:#ef8a76; color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;
+  padding-top:max(20px, env(safe-area-inset-top, 0px));padding-bottom:max(48px, env(safe-area-inset-bottom, 0px));
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+.wrap{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(28px,8vw,40px);line-height:1.1;margin:0;text-wrap:balance}
+h2{font-family:var(--display);font-weight:400;font-size:22px;line-height:1.25;margin:0;text-wrap:balance}
+.lede{color:var(--muted);margin:4px 0 0;max-width:52ch}
+.label{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--kelp);font-weight:500}
+.page{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:20px;display:flex;flex-direction:column;gap:18px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field .n{font-family:var(--mono);color:var(--ochre);margin-right:6px}
+.field label{font-weight:600;font-size:15.5px}
+.field .hint{color:var(--muted);font-size:14px;margin:0}
+textarea,input[type=text],input[type=date],input[type=search]{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:11px 13px}
+textarea{min-height:84px;resize:vertical;line-height:1.55}
+textarea:focus,input:focus,button:focus-visible{outline:2px solid var(--kelp);outline-offset:2px}
+input[type=date]{max-width:220px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.spread{justify-content:space-between}
+button{font:inherit;font-size:14px;font-weight:500;cursor:pointer;border-radius:999px;padding:8px 15px;border:1px solid var(--line);background:transparent;color:var(--ink)}
+button:hover{border-color:var(--kelp);color:var(--kelp)}
+.primary{background:var(--kelp);border-color:var(--kelp);color:var(--paper);padding:10px 20px}
+.primary:hover{color:var(--paper);opacity:.9}
+.danger{color:var(--danger);border-color:var(--danger)}
+.status{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:13px;padding:4px 10px}
+.entry{background:var(--paper);border:1px solid var(--line);border-radius:6px}
+.entry summary{list-style:none;cursor:pointer;padding:14px 16px;display:flex;flex-direction:column;gap:2px}
+.entry summary::-webkit-details-marker{display:none}
+.entry .date{font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.04em}
+.entry .sit{font-family:var(--display);font-size:17px;line-height:1.35;overflow-wrap:anywhere}
+.entry .belief{font-size:13.5px;color:var(--ochre)}
+.entry dl{margin:0;padding:0 16px 16px;display:flex;flex-direction:column;gap:10px}
+.entry dt{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--kelp)}
+.entry dd{margin:2px 0 0;white-space:pre-wrap;overflow-wrap:anywhere}
+.entry .actions{padding:0 16px 16px}
+.empty{color:var(--muted);margin:0}
+.patterns ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.patterns li span{font-family:var(--mono);font-size:12px;color:var(--muted);margin-left:6px}
+.confirm{background:var(--ochre-soft);border-radius:4px;padding:10px 12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:14px}
+.note{font-size:13.5px;color:var(--muted);background:var(--kelp-soft);border-radius:4px;padding:10px 12px;margin:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="label">Observation report</span>
+    <h1>Meaning vs. Reality</h1>
+    <p class="lede">Catch the story your mind told, name the belief underneath, and check it against what actually happened.</p>
+  </header>
+
+  <form class="page" id="form" autocomplete="off">
+    <div class="row spread">
+      <h2 id="form-title">New entry</h2>
+      <span class="status" id="save-status"></span>
+    </div>
+    <div class="field">
+      <label for="f-date">Date</label>
+      <input type="date" id="f-date" required>
+    </div>
+    <div class="field">
+      <label for="f-situation"><span class="n">1</span>Situation</label>
+      <p class="hint">Just the facts, as a camera would record them.</p>
+      <textarea id="f-situation" required></textarea>
+    </div>
+    <div class="field">
+      <label for="f-meaning"><span class="n">2</span>Meaning I created</label>
+      <p class="hint">The story my mind told about it. What did I decide it meant?</p>
+      <textarea id="f-meaning"></textarea>
+    </div>
+    <div class="field">
+      <label for="f-belief"><span class="n">3</span>Core belief</label>
+      <p class="hint">The old belief underneath, e.g. "I'm too much", "People leave".</p>
+      <input type="text" id="f-belief" list="belief-list">
+      <datalist id="belief-list"></datalist>
+      <div class="chips" id="belief-chips"></div>
+    </div>
+    <div class="field">
+      <label for="f-evidence"><span class="n">4</span>Evidence I gathered</label>
+      <p class="hint">What do I actually know for sure? What supports the story, and what doesn't?</p>
+      <textarea id="f-evidence"></textarea>
+    </div>
+    <div class="field">
+      <label for="f-redirect"><span class="n">5</span>How I redirected</label>
+      <p class="hint">What I did or told myself instead. What now, and what's in my control?</p>
+      <textarea id="f-redirect"></textarea>
+    </div>
+    <div class="row">
+      <button type="submit" class="primary" id="save-btn">Save entry</button>
+      <button type="button" id="cancel-btn" hidden>Cancel edit</button>
+    </div>
+  </form>
+
+  <section class="page patterns" id="patterns" hidden>
+    <span class="label">Patterns</span>
+    <h2>Beliefs that keep showing up</h2>
+    <ol id="pattern-list"></ol>
+  </section>
+
+  <section style="display:flex;flex-direction:column;gap:12px">
+    <div class="row spread">
+      <h2>Past entries</h2>
+      <span class="status" id="count"></span>
+    </div>
+    <input type="search" id="search" placeholder="Search entries" aria-label="Search entries">
+    <div id="list" style="display:flex;flex-direction:column;gap:10px"></div>
+  </section>
+
+  <section class="page">
+    <span class="label">Backup</span>
+    <p class="note">Entries are saved only on this phone, in this app. Nothing is uploaded anywhere. Back up now and then so you don't lose them if you clear your browser or change phones.</p>
+    <div class="row">
+      <button type="button" id="export-json">Save backup file</button>
+      <button type="button" id="export-csv">Export as spreadsheet</button>
+      <button type="button" id="import-btn">Restore from backup</button>
+      <input type="file" id="import-file" accept="application/json,.json" hidden>
+    </div>
+    <span class="status" id="backup-status"></span>
+  </section>
+</div>
+
+<script>
+const KEY = "mvr-entries-v1";
+const $ = id => document.getElementById(id);
+const FIELDS = [["situation","Situation"],["meaning","Meaning I created"],["belief","Core belief"],["evidence","Evidence I gathered"],["redirect","How I redirected"]];
+const pad = n => String(n).padStart(2,"0");
+const today = () => { const d=new Date(); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; };
+const fmt = k => new Date(k+"T12:00:00").toLocaleDateString(undefined,{weekday:"short",day:"numeric",month:"long",year:"numeric"});
+
+let entries = load();
+let editing = null;
+
+function load(){ try{ return JSON.parse(localStorage.getItem(KEY)||"[]"); }catch(_){ return []; } }
+function persist(){
+  try{ localStorage.setItem(KEY, JSON.stringify(entries)); return true; }
+  catch(_){ $("save-status").textContent="Couldn't save on this device. Storage may be full or blocked."; return false; }
+}
+if(navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{});
+
+function resetForm(){
+  editing=null; $("form").reset(); $("f-date").value=today();
+  $("form-title").textContent="New entry"; $("save-btn").textContent="Save entry"; $("cancel-btn").hidden=true;
+}
+$("form").addEventListener("submit", e=>{
+  e.preventDefault();
+  const data = {date:$("f-date").value||today()};
+  FIELDS.forEach(([k])=>data[k]=$("f-"+k).value.trim());
+  if(!data.situation){ $("save-status").textContent="Add the situation first."; return; }
+  if(editing){ const i=entries.findIndex(x=>x.id===editing); if(i>-1) entries[i]={...entries[i],...data,updated:new Date().toISOString()}; }
+  else entries.push({id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),created:new Date().toISOString(),...data});
+  if(persist()){ $("save-status").textContent = editing ? "Entry updated" : "Entry saved"; resetForm(); render(); }
+});
+$("cancel-btn").onclick=()=>{ resetForm(); $("save-status").textContent=""; };
+$("search").addEventListener("input", render);
+
+function edit(id){
+  const x=entries.find(e=>e.id===id); if(!x) return;
+  editing=id; $("f-date").value=x.date; FIELDS.forEach(([k])=>$("f-"+k).value=x[k]||"");
+  $("form-title").textContent="Edit entry"; $("save-btn").textContent="Update entry"; $("cancel-btn").hidden=false;
+  $("save-status").textContent=""; window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function beliefCounts(){
+  const m=new Map();
+  entries.forEach(e=>{ const b=(e.belief||"").trim(); if(!b) return; const k=b.toLowerCase();
+    const cur=m.get(k)||{text:b,n:0}; cur.n++; m.set(k,cur); });
+  return [...m.values()].sort((a,b)=>b.n-a.n);
+}
+
+function render(){
+  const beliefs=beliefCounts();
+  $("belief-list").textContent=""; $("belief-chips").textContent="";
+  beliefs.forEach((b,i)=>{
+    const o=document.createElement("option"); o.value=b.text; $("belief-list").appendChild(o);
+    if(i<6){ const c=document.createElement("button"); c.type="button"; c.className="chip"; c.textContent=b.text;
+      c.onclick=()=>{ $("f-belief").value=b.text; }; $("belief-chips").appendChild(c); }
+  });
+  const repeat=beliefs.filter(b=>b.n>1);
+  $("patterns").hidden=!repeat.length; $("pattern-list").textContent="";
+  repeat.slice(0,8).forEach(b=>{ const li=document.createElement("li"); li.textContent=b.text;
+    const s=document.createElement("span"); s.textContent=`${b.n} times`; li.appendChild(s); $("pattern-list").appendChild(li); });
+
+  const q=$("search").value.trim().toLowerCase();
+  const list=$("list"); list.textContent="";
+  const shown=entries.filter(e=>!q||[e.date,...FIELDS.map(([k])=>e[k]||"")].join(" ").toLowerCase().includes(q))
+    .sort((a,b)=>b.date.localeCompare(a.date)||(b.created||"").localeCompare(a.created||""));
+  $("count").textContent = entries.length ? `${entries.length} ${entries.length===1?"entry":"entries"}` : "";
+  if(!shown.length){ const p=document.createElement("p"); p.className="empty";
+    p.textContent = entries.length ? "No entries match that search." : "Your entries will appear here, newest first."; list.appendChild(p); return; }
+  shown.forEach(e=>{
+    const d=document.createElement("details"); d.className="entry";
+    const s=document.createElement("summary");
+    const dt=document.createElement("span"); dt.className="date"; dt.textContent=fmt(e.date);
+    const sit=document.createElement("span"); sit.className="sit"; sit.textContent=e.situation;
+    s.append(dt,sit);
+    if(e.belief){ const b=document.createElement("span"); b.className="belief"; b.textContent="Belief: "+e.belief; s.appendChild(b); }
+    d.appendChild(s);
+    const dl=document.createElement("dl");
+    FIELDS.slice(1).forEach(([k,l])=>{ if(!e[k]) return; const t=document.createElement("dt"); t.textContent=l;
+      const v=document.createElement("dd"); v.textContent=e[k]; const w=document.createElement("div"); w.append(t,v); dl.appendChild(w); });
+    d.appendChild(dl);
+    const a=document.createElement("div"); a.className="row actions";
+    const eb=document.createElement("button"); eb.type="button"; eb.textContent="Edit"; eb.onclick=()=>edit(e.id);
+    const db=document.createElement("button"); db.type="button"; db.className="danger"; db.textContent="Delete";
+    db.onclick=()=>{
+      if(a.querySelector(".confirm")) return;
+      const c=document.createElement("div"); c.className="confirm"; c.textContent="Delete this entry for good?";
+      const yes=document.createElement("button"); yes.type="button"; yes.className="danger"; yes.textContent="Delete";
+      const no=document.createElement("button"); no.type="button"; no.textContent="Keep it";
+      yes.onclick=()=>{ entries=entries.filter(x=>x.id!==e.id); if(editing===e.id) resetForm(); persist(); render(); };
+      no.onclick=()=>c.remove(); c.append(yes,no); a.appendChild(c);
+    };
+    a.append(eb,db); d.appendChild(a); list.appendChild(d);
+  });
+}
+
+function download(name, text, type){
+  const url=URL.createObjectURL(new Blob([text],{type}));
+  const a=document.createElement("a"); a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),2000);
+}
+$("export-json").onclick=()=>{
+  if(!entries.length){ $("backup-status").textContent="Nothing to back up yet."; return; }
+  download(`meaning-vs-reality-backup-${today()}.json`, JSON.stringify({app:"meaning-vs-reality",version:1,entries},null,2),"application/json");
+  $("backup-status").textContent="Backup file saved. Keep it somewhere safe, like your cloud drive.";
+};
+$("export-csv").onclick=()=>{
+  if(!entries.length){ $("backup-status").textContent="Nothing to export yet."; return; }
+  const esc=v=>`"${String(v||"").replace(/"/g,'""')}"`;
+  const rows=[["Date",...FIELDS.map(f=>f[1])].map(esc).join(",")]
+    .concat([...entries].sort((a,b)=>a.date.localeCompare(b.date)).map(e=>[e.date,...FIELDS.map(([k])=>e[k])].map(esc).join(",")));
+  download(`meaning-vs-reality-${today()}.csv`, "﻿"+rows.join("\r\n"), "text/csv");
+  $("backup-status").textContent="Spreadsheet saved.";
+};
+$("import-btn").onclick=()=>$("import-file").click();
+$("import-file").onchange=async ev=>{
+  const f=ev.target.files[0]; ev.target.value=""; if(!f) return;
+  try{
+    const data=JSON.parse(await f.text()); const incoming=Array.isArray(data)?data:data.entries;
+    if(!Array.isArray(incoming)) throw 0;
+    const ids=new Set(entries.map(e=>e.id)); let added=0;
+    incoming.forEach(e=>{ if(e&&e.id&&e.date&&!ids.has(e.id)){ entries.push(e); ids.add(e.id); added++; } });
+    persist(); render(); $("backup-status").textContent=`Restored ${added} ${added===1?"entry":"entries"}. Entries you already had were kept.`;
+  }catch(_){ $("backup-status").textContent="That file isn't a Meaning vs. Reality backup. Choose the .json file this app saved."; }
+};
+
+resetForm(); render();
+if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});
+</script>
+</body>
+</html>
