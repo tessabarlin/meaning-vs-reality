@@ -41,7 +41,7 @@ h2{font-family:var(--display);font-weight:400;font-size:22px;line-height:1.25;ma
 .field label{font-weight:600;font-size:15.5px}
 .field .hint{color:var(--muted);font-size:14px;margin:0}
 textarea,input[type=text],input[type=date],input[type=search]{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:11px 13px}
-textarea{min-height:84px;resize:vertical;line-height:1.55}
+textarea{min-height:180px;resize:vertical;line-height:1.6;font-size:17px;overflow:hidden}
 textarea:focus,input:focus,button:focus-visible{outline:2px solid var(--kelp);outline-offset:2px}
 input[type=date]{max-width:220px}
 .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
@@ -91,7 +91,7 @@ button:hover{border-color:var(--kelp);color:var(--kelp)}
     <div class="field">
       <label for="f-situation"><span class="n">1</span>Situation</label>
       <p class="hint">Just the facts, as a camera would record them.</p>
-      <textarea id="f-situation" required></textarea>
+      <textarea id="f-situation" rows="6" required></textarea>
     </div>
     <div class="field">
       <label for="f-meaning"><span class="n">2</span>Meaning I created</label>
@@ -273,6 +273,13 @@ $("import-file").onchange=async ev=>{
     persist(); render(); $("backup-status").textContent=`Restored ${added} ${added===1?"entry":"entries"}. Entries you already had were kept.`;
   }catch(_){ $("backup-status").textContent="That file isn't a Meaning vs. Reality backup. Choose the .json file this app saved."; }
 };
+
+// grow each box with its text
+function grow(t){ t.style.height="auto"; t.style.height=Math.max(t.scrollHeight+2,180)+"px"; }
+const growAll=()=>document.querySelectorAll("textarea").forEach(grow);
+document.querySelectorAll("textarea").forEach(t=>t.addEventListener("input",()=>grow(t)));
+const _reset=resetForm; resetForm=function(){ _reset(); growAll(); };
+const _edit=edit; edit=function(id){ _edit(id); growAll(); };
 
 resetForm(); render();
 if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(()=>{});
